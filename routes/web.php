@@ -4,6 +4,13 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -14,9 +21,23 @@ Route::get('/', function () {
     ]);
 });
 
+// Dashboard Route with Role Check
 Route::get('/dashboard', function () {
+    if (Auth::check() && Auth::user()->role === 'admin') {
+        return redirect('/admin/dashboard');
+    }
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+// Admin Routes
+Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        if (Auth::user()->role !== 'admin') {
+            return redirect('/dashboard');
+        }
+        return Inertia::render('AdminDashboard');
+    })->name('admin.dashboard');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
