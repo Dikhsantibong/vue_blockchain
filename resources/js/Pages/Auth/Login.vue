@@ -34,10 +34,13 @@ const submit = () => {
         <Head title="Log in" />
 
         <div class="min-h-screen flex flex-col items-center justify-center px-4">
-            <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-                <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Welcome Back</h2>
+            <div class="max-w-md w-full bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-2">Welcome Back</h2>
+                    <p class="text-blue-200">Login to access your voting dashboard</p>
+                </div>
 
-                <div v-if="status" class="mb-4 text-sm font-medium text-green-600 text-center">
+                <div v-if="status" class="mb-4 text-sm font-medium text-green-400 text-center">
                     {{ status }}
                 </div>
 
@@ -46,7 +49,7 @@ const submit = () => {
                         <TextInput
                             id="email"
                             type="email"
-                            class="block w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500"
+                            class="block w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-blue-200 focus:ring-2 focus:ring-blue-500"
                             v-model="form.email"
                             placeholder="Email Address"
                             required
@@ -60,7 +63,7 @@ const submit = () => {
                         <TextInput
                             id="password"
                             type="password"
-                            class="block w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500"
+                            class="block w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-blue-200 focus:ring-2 focus:ring-blue-500"
                             v-model="form.password"
                             placeholder="Password"
                             required
@@ -71,31 +74,31 @@ const submit = () => {
 
                     <div class="flex items-center justify-between">
                         <label class="flex items-center">
-                            <Checkbox name="remember" v-model:checked="form.remember" />
-                            <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                            <Checkbox name="remember" v-model:checked="form.remember" class="border-white/30" />
+                            <span class="ml-2 text-sm text-blue-200">Remember me</span>
                         </label>
 
                         <Link
                             v-if="canResetPassword"
                             :href="route('password.request')"
-                            class="text-sm text-blue-600 hover:text-blue-800"
+                            class="text-sm text-blue-300 hover:text-blue-200 transition"
                         >
                             Forgot password?
                         </Link>
                     </div>
 
                     <PrimaryButton
-                        class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
+                        class="w-full py-3 bg-white hover:bg-blue-50 text-blue-900 font-semibold rounded-lg transition duration-200"
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
                     >
                         Log in
                     </PrimaryButton>
 
-                    <div class="text-center mt-4">
+                    <div class="text-center mt-6">
                         <Link
                             :href="route('register')"
-                            class="text-sm text-gray-600 hover:text-gray-900"
+                            class="text-sm text-blue-300 hover:text-blue-200 transition"
                         >
                             Don't have an account? Register
                         </Link>

@@ -25,15 +25,18 @@ const submit = () => {
         <Head title="Register" />
 
         <div class="min-h-screen flex flex-col items-center justify-center px-4">
-            <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-                <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Create Account</h2>
+            <div class="max-w-md w-full bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-2">Create Account</h2>
+                    <p class="text-blue-200">Register to participate in secure voting</p>
+                </div>
                 
                 <form @submit.prevent="submit" class="space-y-6">
                     <div>
                         <TextInput
                             id="name"
                             type="text"
-                            class="block w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500"
+                            class="block w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-blue-200 focus:ring-2 focus:ring-blue-500"
                             v-model="form.name"
                             placeholder="Full Name"
                             required
@@ -47,7 +50,7 @@ const submit = () => {
                         <TextInput
                             id="email"
                             type="email"
-                            class="block w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500"
+                            class="block w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-blue-200 focus:ring-2 focus:ring-blue-500"
                             v-model="form.email"
                             placeholder="Email Address"
                             required
@@ -60,7 +63,7 @@ const submit = () => {
                         <TextInput
                             id="password"
                             type="password"
-                            class="block w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500"
+                            class="block w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-blue-200 focus:ring-2 focus:ring-blue-500"
                             v-model="form.password"
                             placeholder="Password"
                             required
@@ -73,7 +76,7 @@ const submit = () => {
                         <TextInput
                             id="password_confirmation"
                             type="password"
-                            class="block w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500"
+                            class="block w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-blue-200 focus:ring-2 focus:ring-blue-500"
                             v-model="form.password_confirmation"
                             placeholder="Confirm Password"
                             required
@@ -83,17 +86,17 @@ const submit = () => {
                     </div>
 
                     <PrimaryButton
-                        class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
+                        class="w-full py-3 bg-white hover:bg-blue-50 text-blue-900 font-semibold rounded-lg transition duration-200"
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
                     >
                         Create Account
                     </PrimaryButton>
 
-                    <div class="text-center mt-4">
+                    <div class="text-center mt-6">
                         <Link
                             :href="route('login')"
-                            class="text-sm text-gray-600 hover:text-gray-900"
+                            class="text-sm text-blue-300 hover:text-blue-200 transition"
                         >
                             Already have an account? Login
                         </Link>
