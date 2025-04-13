@@ -1,10 +1,15 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\Election;
+use App\Models\Candidate;
+use App\Models\Vote;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\VoteController;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,11 +27,25 @@ Route::get('/', function () {
 });
 
 // Dashboard Route with Role Check
-Route::get('/dashboard', function () {
+Route::get('/dashboard', function (Request $request) {
     if (Auth::check() && Auth::user()->role === 'admin') {
         return redirect('/admin/dashboard');
     }
-    return Inertia::render('Dashboard');
+
+    $user = Auth::user();
+    $elections = Election::with('candidates')->get();
+    $candidates = Candidate::all();
+    $userVotes = Vote::with(['election', 'candidate'])
+        ->where('voter_id', $user->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return Inertia::render('Dashboard', [
+        'elections' => $elections,
+        'candidates' => $candidates,
+        'userVotes' => $userVotes,
+        'tab' => $request->get('tab', 'active-elections')
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Admin Routes
@@ -57,6 +76,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Voting routes
+    Route::post('/votes', [VoteController::class, 'store'])->name('votes.store');
+    Route::get('/elections/{election}/verify', [VoteController::class, 'verify'])->name('votes.verify');
 });
 
 require __DIR__.'/auth.php';

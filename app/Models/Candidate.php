@@ -10,11 +10,11 @@ class Candidate extends Model
     use HasFactory;
 
     protected $fillable = [
+        'election_id',
         'name',
         'vision',
         'mission',
-        'image',
-        'election_id'
+        'image'
     ];
 
     protected $appends = ['image_url'];
@@ -31,6 +31,9 @@ class Candidate extends Model
 
     public function getImageUrlAttribute()
     {
-        return $this->image ? asset('storage/' . $this->image) : null;
+        if ($this->image) {
+            return asset('storage/' . $this->image);
+        }
+        return null;
     }
 } 
