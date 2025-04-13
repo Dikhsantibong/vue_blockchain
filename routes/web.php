@@ -46,6 +46,11 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
     Route::post('/elections', [App\Http\Controllers\Admin\ElectionController::class, 'store'])->name('admin.elections.store');
     Route::put('/elections/{election}', [App\Http\Controllers\Admin\ElectionController::class, 'update'])->name('admin.elections.update');
     Route::delete('/elections/{election}', [App\Http\Controllers\Admin\ElectionController::class, 'destroy'])->name('admin.elections.destroy');
+
+    // Candidates routes
+    Route::get('/elections/{election}/candidates', [App\Http\Controllers\Admin\CandidateController::class, 'index'])->name('admin.elections.candidates.index');
+    Route::post('/elections/{election}/candidates', [App\Http\Controllers\Admin\CandidateController::class, 'store'])->name('admin.elections.candidates.store');
+    Route::delete('/elections/{election}/candidates/{candidate}', [App\Http\Controllers\Admin\CandidateController::class, 'destroy'])->name('admin.elections.candidates.destroy');
 });
 
 Route::middleware('auth')->group(function () {
