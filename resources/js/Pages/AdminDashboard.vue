@@ -147,9 +147,9 @@ defineProps({
                                 <p class="text-white">Election "Presidential 2024" created</p>
                                 <p class="text-sm text-indigo-200">1 hour ago</p>
                             </div>
-                        </div>
                     </div>
                 </div>
+            </div>
             </main>
         </div>
     </div>

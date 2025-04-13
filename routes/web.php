@@ -37,6 +37,8 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
         }
         return Inertia::render('AdminDashboard');
     })->name('admin.dashboard');
+
+    Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users');
 });
 
 Route::middleware('auth')->group(function () {
