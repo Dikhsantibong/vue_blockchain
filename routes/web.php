@@ -39,6 +39,7 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
     })->name('admin.dashboard');
 
     Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users');
+    Route::post('/users', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin.users.store');
 });
 
 Route::middleware('auth')->group(function () {
