@@ -2,6 +2,7 @@
 import { Head } from '@inertiajs/vue3';
 import Sidebar from '@/Components/Sidebar.vue';
 import { ref } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 
 defineProps({
     elections: {
@@ -11,6 +12,14 @@ defineProps({
 });
 
 const searchQuery = ref('');
+const showModal = ref(false);
+
+const form = useForm({
+    title: '',
+    description: '',
+    start_date: '',
+    end_date: '',
+});
 
 const getStatusClass = (status) => {
     return {
@@ -19,6 +28,15 @@ const getStatusClass = (status) => {
         'bg-yellow-500/20 text-yellow-300': status === 'upcoming',
         'bg-gray-500/20 text-gray-300': status === 'completed'
     }
+};
+
+const submitForm = () => {
+    form.post(route('admin.elections.store'), {
+        onSuccess: () => {
+            showModal.value = false;
+            form.reset();
+        },
+    });
 };
 </script>
 
@@ -58,7 +76,10 @@ const getStatusClass = (status) => {
                             />
                         </svg>
                     </div>
-                    <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center space-x-2">
+                    <button 
+                        @click="showModal = true"
+                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center space-x-2"
+                    >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
@@ -120,6 +141,95 @@ const getStatusClass = (status) => {
                     </table>
                 </div>
             </main>
+        </div>
+
+        <!-- Create Election Modal -->
+        <div v-if="showModal" class="fixed inset-0 z-50 overflow-y-auto">
+            <!-- Backdrop -->
+            <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+
+            <!-- Modal Content -->
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="relative bg-gradient-to-br from-gray-900 to-indigo-900 rounded-xl shadow-xl max-w-2xl w-full p-6 border border-indigo-700/30">
+                    <!-- Modal Header -->
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-white">Create New Election</h2>
+                        <p class="text-indigo-200 mt-1">Fill in the election details below.</p>
+                    </div>
+
+                    <!-- Form -->
+                    <form @submit.prevent="submitForm" class="space-y-4">
+                        <!-- Title -->
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-200 mb-1">Title</label>
+                            <input
+                                v-model="form.title"
+                                type="text"
+                                class="w-full px-4 py-2 bg-white/10 border border-indigo-700/30 rounded-lg text-white placeholder-indigo-300 focus:outline-none focus:border-indigo-500"
+                                required
+                            >
+                            <div v-if="form.errors.title" class="text-red-400 text-sm mt-1">{{ form.errors.title }}</div>
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-200 mb-1">Description</label>
+                            <textarea
+                                v-model="form.description"
+                                rows="3"
+                                class="w-full px-4 py-2 bg-white/10 border border-indigo-700/30 rounded-lg text-white placeholder-indigo-300 focus:outline-none focus:border-indigo-500"
+                            ></textarea>
+                            <div v-if="form.errors.description" class="text-red-400 text-sm mt-1">{{ form.errors.description }}</div>
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-indigo-200 mb-1">Start Date</label>
+                                <input
+                                    v-model="form.start_date"
+                                    type="datetime-local"
+                                    class="w-full px-4 py-2 bg-white/10 border border-indigo-700/30 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+                                    required
+                                >
+                                <div v-if="form.errors.start_date" class="text-red-400 text-sm mt-1">{{ form.errors.start_date }}</div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-indigo-200 mb-1">End Date</label>
+                                <input
+                                    v-model="form.end_date"
+                                    type="datetime-local"
+                                    class="w-full px-4 py-2 bg-white/10 border border-indigo-700/30 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+                                    required
+                                >
+                                <div v-if="form.errors.end_date" class="text-red-400 text-sm mt-1">{{ form.errors.end_date }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Actions -->
+                        <div class="flex justify-end space-x-3 mt-6">
+                            <button
+                                type="button"
+                                @click="showModal = false"
+                                class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                :disabled="form.processing"
+                                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center space-x-2"
+                            >
+                                <span>Create Election</span>
+                                <svg v-if="form.processing" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </template> 
