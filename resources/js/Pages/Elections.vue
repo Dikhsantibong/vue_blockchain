@@ -13,12 +13,23 @@ defineProps({
 
 const searchQuery = ref('');
 const showModal = ref(false);
+const showEditModal = ref(false);
+const showDeleteModal = ref(false);
+const selectedElection = ref(null);
 
 const form = useForm({
     title: '',
     description: '',
     start_date: '',
     end_date: '',
+});
+
+const editForm = useForm({
+    title: '',
+    description: '',
+    start_date: '',
+    end_date: '',
+    status: ''
 });
 
 const getStatusClass = (status) => {
@@ -37,6 +48,47 @@ const submitForm = () => {
             form.reset();
         },
     });
+};
+
+const openEditModal = (election) => {
+    selectedElection.value = election;
+    editForm.title = election.title;
+    editForm.description = election.description || '';
+    editForm.start_date = formatDateForInput(election.start_date);
+    editForm.end_date = formatDateForInput(election.end_date);
+    editForm.status = election.status;
+    showEditModal.value = true;
+};
+
+const formatDateForInput = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().slice(0, 16);
+};
+
+const submitEditForm = () => {
+    editForm.put(route('admin.elections.update', selectedElection.value.id), {
+        onSuccess: () => {
+            showEditModal.value = false;
+            editForm.reset();
+            selectedElection.value = null;
+        },
+    });
+};
+
+const openDeleteModal = (election) => {
+    selectedElection.value = election;
+    showDeleteModal.value = true;
+};
+
+const confirmDelete = () => {
+    if (selectedElection.value) {
+        useForm().delete(route('admin.elections.destroy', selectedElection.value.id), {
+            onSuccess: () => {
+                showDeleteModal.value = false;
+                selectedElection.value = null;
+            },
+        });
+    }
 };
 </script>
 
@@ -119,12 +171,20 @@ const submitForm = () => {
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                             </svg>
                                         </button>
-                                        <button class="p-1 hover:text-blue-400 transition-colors" title="Edit">
+                                        <button 
+                                            @click="openEditModal(election)"
+                                            class="p-1 hover:text-blue-400 transition-colors" 
+                                            title="Edit"
+                                        >
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
-                                        <button class="p-1 hover:text-red-400 transition-colors" title="Delete">
+                                        <button 
+                                            @click="openDeleteModal(election)"
+                                            class="p-1 hover:text-red-400 transition-colors" 
+                                            title="Delete"
+                                        >
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
@@ -228,6 +288,150 @@ const submitForm = () => {
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Election Modal -->
+        <div v-if="showEditModal" class="fixed inset-0 z-50 overflow-y-auto">
+            <!-- Backdrop -->
+            <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+
+            <!-- Modal Content -->
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="relative bg-gradient-to-br from-gray-900 to-indigo-900 rounded-xl shadow-xl max-w-2xl w-full p-6 border border-indigo-700/30">
+                    <!-- Modal Header -->
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-white">Edit Election</h2>
+                        <p class="text-indigo-200 mt-1">Update the election details below.</p>
+                    </div>
+
+                    <!-- Form -->
+                    <form @submit.prevent="submitEditForm" class="space-y-4">
+                        <!-- Title -->
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-200 mb-1">Title</label>
+                            <input
+                                v-model="editForm.title"
+                                type="text"
+                                class="w-full px-4 py-2 bg-white/10 border border-indigo-700/30 rounded-lg text-white placeholder-indigo-300 focus:outline-none focus:border-indigo-500"
+                                required
+                            >
+                            <div v-if="editForm.errors.title" class="text-red-400 text-sm mt-1">{{ editForm.errors.title }}</div>
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-200 mb-1">Description</label>
+                            <textarea
+                                v-model="editForm.description"
+                                rows="3"
+                                class="w-full px-4 py-2 bg-white/10 border border-indigo-700/30 rounded-lg text-white placeholder-indigo-300 focus:outline-none focus:border-indigo-500"
+                            ></textarea>
+                            <div v-if="editForm.errors.description" class="text-red-400 text-sm mt-1">{{ editForm.errors.description }}</div>
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-indigo-200 mb-1">Start Date</label>
+                                <input
+                                    v-model="editForm.start_date"
+                                    type="datetime-local"
+                                    class="w-full px-4 py-2 bg-white/10 border border-indigo-700/30 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+                                    required
+                                >
+                                <div v-if="editForm.errors.start_date" class="text-red-400 text-sm mt-1">{{ editForm.errors.start_date }}</div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-indigo-200 mb-1">End Date</label>
+                                <input
+                                    v-model="editForm.end_date"
+                                    type="datetime-local"
+                                    class="w-full px-4 py-2 bg-white/10 border border-indigo-700/30 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+                                    required
+                                >
+                                <div v-if="editForm.errors.end_date" class="text-red-400 text-sm mt-1">{{ editForm.errors.end_date }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-200 mb-1">Status</label>
+                            <select
+                                v-model="editForm.status"
+                                class="w-full px-4 py-2 bg-white/10 border border-indigo-700/30 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+                                required
+                            >
+                                <option value="upcoming">Upcoming</option>
+                                <option value="active">Active</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                            <div v-if="editForm.errors.status" class="text-red-400 text-sm mt-1">{{ editForm.errors.status }}</div>
+                        </div>
+
+                        <!-- Modal Actions -->
+                        <div class="flex justify-end space-x-3 mt-6">
+                            <button
+                                type="button"
+                                @click="showEditModal = false"
+                                class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                :disabled="editForm.processing"
+                                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center space-x-2"
+                            >
+                                <span>Update Election</span>
+                                <svg v-if="editForm.processing" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div v-if="showDeleteModal" class="fixed inset-0 z-50 overflow-y-auto">
+            <!-- Backdrop -->
+            <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+
+            <!-- Modal Content -->
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="relative bg-gradient-to-br from-gray-900 to-indigo-900 rounded-xl shadow-xl max-w-md w-full p-6 border border-indigo-700/30">
+                    <!-- Modal Header -->
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-white">Delete Election</h2>
+                        <p class="text-indigo-200 mt-1">Are you sure you want to delete this election? This action cannot be undone.</p>
+                    </div>
+
+                    <!-- Election Info -->
+                    <div class="mb-6 p-4 bg-white/5 rounded-lg border border-indigo-700/30">
+                        <p class="text-white font-medium">{{ selectedElection?.title }}</p>
+                        <p class="text-sm text-indigo-200 mt-1">{{ selectedElection?.description }}</p>
+                    </div>
+
+                    <!-- Modal Actions -->
+                    <div class="flex justify-end space-x-3">
+                        <button
+                            type="button"
+                            @click="showDeleteModal = false"
+                            class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            @click="confirmDelete"
+                            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                        >
+                            Delete Election
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
