@@ -1,5 +1,5 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import UserSidebar from '@/Components/UserSidebar.vue';
 import { ref } from 'vue';
 
@@ -22,6 +22,38 @@ const formatDate = (dateString) => {
         hour: '2-digit',
         minute: '2-digit'
     });
+};
+
+const downloadJSON = (vote) => {
+    const data = {
+        election: {
+            id: vote.election.id,
+            title: vote.election.title,
+            start_date: vote.election.start_date,
+            end_date: vote.election.end_date
+        },
+        candidate: {
+            id: vote.candidate.id,
+            name: vote.candidate.name
+        },
+        vote: {
+            id: vote.id,
+            timestamp: vote.timestamp,
+            block_info: vote.block_info
+        }
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `vote-${vote.id}-proof.json`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+};
+
+const downloadPDF = (vote) => {
+    window.location.href = route('user.my-votes.download-pdf', vote.id);
 };
 </script>
 
@@ -136,6 +168,28 @@ const formatDate = (dateString) => {
                                             <p class="text-indigo-300 text-sm mb-1">Nonce</p>
                                             <p class="text-white font-mono">{{ vote.block_info.nonce }}</p>
                                         </div>
+                                    </div>
+
+                                    <!-- Download Buttons -->
+                                    <div class="mt-6 flex flex-col sm:flex-row gap-4">
+                                        <button 
+                                            @click="downloadPDF(vote)"
+                                            class="flex items-center justify-center px-4 py-2 bg-red-600/30 hover:bg-red-600/50 text-red-200 rounded-lg transition-colors space-x-2"
+                                        >
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                            </svg>
+                                            <span>Download PDF</span>
+                                        </button>
+                                        <button 
+                                            @click="downloadJSON(vote)"
+                                            class="flex items-center justify-center px-4 py-2 bg-yellow-600/30 hover:bg-yellow-600/50 text-yellow-200 rounded-lg transition-colors space-x-2"
+                                        >
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                                            </svg>
+                                            <span>Download JSON</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

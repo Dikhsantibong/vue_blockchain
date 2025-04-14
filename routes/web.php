@@ -102,6 +102,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // My Votes
     Route::get('/my-votes', [MyVotesController::class, 'index'])->name('user.my-votes');
+    Route::get('/my-votes/{vote}/pdf', [MyVotesController::class, 'downloadPdf'])->name('user.my-votes.download-pdf');
 });
 
 require __DIR__.'/auth.php';
