@@ -35,9 +35,9 @@ defineProps({
             </Link>
 
             <Link 
-                :href="route('dashboard', { tab: 'active-elections' })"
+                :href="route('user.active-elections.index')"
                 class="flex items-center px-4 py-2 mb-2 text-indigo-200 hover:bg-indigo-800/50 rounded-lg transition-colors"
-                :class="{ 'bg-indigo-800/50': route().params.tab === 'active-elections' }"
+                :class="{ 'bg-indigo-800/50': route().current('user.active-elections.index') }"
             >
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>

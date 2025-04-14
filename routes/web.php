@@ -10,6 +10,8 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\VoteController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\User\DashboardController;
+use App\Http\Controllers\User\ActiveElectionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +82,15 @@ Route::middleware('auth')->group(function () {
     // Voting routes
     Route::post('/votes', [VoteController::class, 'store'])->name('votes.store');
     Route::get('/elections/{election}/verify', [VoteController::class, 'verify'])->name('votes.verify');
+});
+
+// User Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Active Elections
+    Route::get('/active-elections', [ActiveElectionController::class, 'index'])->name('user.active-elections.index');
+    Route::post('/active-elections/vote', [ActiveElectionController::class, 'vote'])->name('user.active-elections.vote');
 });
 
 require __DIR__.'/auth.php';

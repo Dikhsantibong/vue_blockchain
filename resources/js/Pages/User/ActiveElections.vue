@@ -5,17 +5,9 @@ import { ref, computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
-    auth: Object,
     elections: Array,
-    candidates: Array,
     userVotes: Array,
-    tab: {
-        type: String,
-        default: 'active-elections'
-    }
 });
-
-const currentTab = ref(props.tab);
 
 const showVoteModal = ref(false);
 const selectedElection = ref(null);
@@ -24,11 +16,6 @@ const selectedCandidate = ref(null);
 const voteForm = useForm({
     election_id: '',
     candidate_id: '',
-    voter_id: ''
-});
-
-const activeElections = computed(() => {
-    return props.elections.filter(election => isElectionActive(election));
 });
 
 const formatDate = (date) => {
@@ -59,9 +46,8 @@ const openVoteModal = (election, candidate) => {
 const submitVote = () => {
     voteForm.election_id = selectedElection.value.id;
     voteForm.candidate_id = selectedCandidate.value.id;
-    voteForm.voter_id = props.auth.user.id;
 
-    voteForm.post(route('votes.store'), {
+    voteForm.post(route('user.active-elections.vote'), {
         onSuccess: () => {
             showVoteModal.value = false;
             selectedElection.value = null;
@@ -73,87 +59,27 @@ const submitVote = () => {
 const hasVoted = (electionId) => {
     return props.userVotes.some(vote => vote.election_id === electionId);
 };
-
-const isElectionActive = (election) => {
-    const now = new Date();
-    const start = new Date(election.start_date);
-    const end = new Date(election.end_date);
-    return now >= start && now <= end;
-};
-
-const tabs = {
-    'active-elections': {
-        title: 'Active Elections',
-        component: 'ElectionsList'
-    },
-    'my-votes': {
-        title: 'My Votes History',
-        component: 'VotesHistory'
-    }
-};
 </script>
 
 <template>
-    <Head title="User Dashboard" />
+    <Head title="Active Elections" />
 
     <div class="min-h-screen bg-gradient-to-br from-blue-900 to-indigo-800">
-        <UserSidebar :user-votes="userVotes" :active-elections="activeElections" />
+        <UserSidebar :user-votes="userVotes" :active-elections="elections" />
         
         <div class="pl-64">
             <!-- Main Content -->
             <main class="p-8">
-                <!-- Welcome Section -->
+                <!-- Header -->
                 <div class="mb-8">
-                    <h1 class="text-3xl font-bold text-white mb-2">Welcome back, {{ auth.user.name }}!</h1>
-                    <p class="text-indigo-200">Here's what's happening with your voting activities.</p>
+                    <h1 class="text-3xl font-bold text-white mb-2">Active Elections</h1>
+                    <p class="text-indigo-200">Participate in ongoing elections and cast your vote securely.</p>
                 </div>
 
-                <!-- Stats Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    <!-- Voting Status -->
-                    <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-indigo-700/30">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-white">Voting Status</h3>
-                            <div class="bg-emerald-500/10 p-2 rounded-lg">
-                                <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <p class="text-indigo-200">Your account is verified and ready for voting</p>
-                    </div>
-
-                    <!-- Active Elections -->
-                    <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-indigo-700/30">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-white">Active Elections</h3>
-                            <div class="bg-blue-500/10 p-2 rounded-lg">
-                                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <p class="text-indigo-200">{{ activeElections.length }} elections currently active</p>
-                    </div>
-
-                    <!-- My Votes -->
-                    <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-indigo-700/30">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-white">My Votes</h3>
-                            <div class="bg-indigo-500/10 p-2 rounded-lg">
-                                <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <p class="text-indigo-200">You have participated in {{ userVotes.length }} elections</p>
-                    </div>
-                </div>
-
-                Active Elections Section
+                <!-- Elections Grid -->
                 <div class="space-y-8">
                     <template v-for="election in elections" :key="election.id">
-                        <div v-if="isElectionActive(election)" class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-indigo-700/30">
+                        <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-indigo-700/30">
                             <!-- Election Header -->
                             <div class="mb-6">
                                 <div class="flex items-center justify-between mb-2">
@@ -171,7 +97,7 @@ const tabs = {
 
                             <!-- Candidates Grid -->
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <div v-for="candidate in candidates.filter(c => c.election_id === election.id)" 
+                                <div v-for="candidate in election.candidates" 
                                      :key="candidate.id"
                                      class="bg-indigo-900/40 rounded-lg overflow-hidden border border-indigo-700/30 transition-transform hover:scale-105">
                                     <!-- Candidate Image -->
@@ -267,4 +193,4 @@ const tabs = {
             </div>
         </div>
     </div>
-</template>
+</template> 

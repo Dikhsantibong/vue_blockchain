@@ -13,14 +13,12 @@ class Vote extends Model
         'election_id',
         'candidate_id',
         'voter_id',
-        'hash',
-        'previous_hash',
-        'timestamp',
-        'nonce'
+        'block_hash',
+        'block_data'
     ];
 
     protected $casts = [
-        'timestamp' => 'datetime'
+        'block_data' => 'array'
     ];
 
     public function election()
