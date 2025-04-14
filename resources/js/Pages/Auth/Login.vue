@@ -88,7 +88,7 @@ const submit = () => {
                     </div>
 
                     <PrimaryButton
-                        class="w-full py-3 bg-white hover:bg-blue-50 text-blue-900 font-semibold rounded-lg transition duration-200"
+                        class="w-full py-3  text-blue-900 font-semibold rounded-lg transition duration-200"
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
                     >

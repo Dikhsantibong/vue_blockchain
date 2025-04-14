@@ -27,7 +27,7 @@ const submit = () => {
     <GuestLayout>
         <Head title="Register" />
 
-        <div class="min-h-screen flex flex-col items-center justify-center px-4">
+        <div class="min-h-screen flex flex-col items-center justify-center">
             <div class="max-w-4xl w-full bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-8">
                 <div class="text-center mb-8">
                     <h2 class="text-2xl font-bold text-white mb-2">Create Account</h2>
@@ -135,7 +135,7 @@ const submit = () => {
 
                     <div class="mt-8">
                         <PrimaryButton
-                            class="w-full py-3 bg-white hover:bg-blue-50 text-blue-900 font-semibold rounded-lg transition duration-200"
+                            class="w-full py-3   text-blue-900 font-semibold rounded-lg transition duration-200"
                             :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing"
                         >

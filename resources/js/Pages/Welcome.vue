@@ -13,7 +13,7 @@ defineProps({
 
 <template>
     <Head title="E-Voting System" />
-    <div class="min-h-screen bg-gradient-to-br from-blue-900 to-indigo-800 text-white">
+    <div class="min-h-screen bg-[url('https://wallpapers.com/images/hd/blockchain-background-72089b01c392a92a.jpg')] bg-cover text-white">
         <div class="relative">
             <!-- Navigation -->
             <nav class="absolute w-full p-6 flex justify-end">
@@ -29,7 +29,7 @@ defineProps({
                     <template v-else>
                         <Link
                             :href="route('login')"
-                            class="text-white hover:text-blue-200 transition"
+                            class="text-white hover:text-blue-200 transition bg-indigo-600 px-4 py-2 rounded-lg"
                         >
                             Log in
                         </Link>
@@ -37,7 +37,7 @@ defineProps({
                         <Link
                             v-if="canRegister"
                             :href="route('register')"
-                            class="ml-4 text-white hover:text-blue-200 transition"
+                            class="ml-4 text-white hover:text-blue-200 transition bg-indigo-600 px-4 py-2 rounded-lg"
                         >
                             Register
                         </Link>
