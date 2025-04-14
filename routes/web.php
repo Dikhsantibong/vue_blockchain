@@ -12,6 +12,7 @@ use App\Http\Controllers\VoteController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\ActiveElectionController;
+use App\Http\Controllers\User\MyVotesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +92,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Active Elections
     Route::get('/active-elections', [ActiveElectionController::class, 'index'])->name('user.active-elections.index');
     Route::post('/active-elections/vote', [ActiveElectionController::class, 'vote'])->name('user.active-elections.vote');
+
+    // My Votes
+    Route::get('/my-votes', [MyVotesController::class, 'index'])->name('user.my-votes');
 });
 
 require __DIR__.'/auth.php';
