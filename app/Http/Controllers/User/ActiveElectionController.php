@@ -20,10 +20,12 @@ class ActiveElectionController extends Controller
             ->get();
 
         $userVotes = Vote::where('voter_id', Auth::id())->get();
+        $blockchain = Vote::getBlockchain();
 
         return inertia('User/ActiveElections', [
             'elections' => $elections,
-            'userVotes' => $userVotes
+            'userVotes' => $userVotes,
+            'blockchain' => $blockchain
         ]);
     }
 
@@ -48,27 +50,34 @@ class ActiveElectionController extends Controller
             return back()->with('error', 'You have already voted in this election.');
         }
 
-        // Create blockchain data
-        $blockData = [
+        // Create new vote instance
+        $vote = new Vote([
             'election_id' => $request->election_id,
             'candidate_id' => $request->candidate_id,
             'voter_id' => Auth::id(),
-            'timestamp' => now()->timestamp,
-            'previous_hash' => Vote::latest()->first()?->block_hash ?? '0',
-        ];
-
-        // Generate block hash using SHA256
-        $blockHash = hash('sha256', json_encode($blockData));
-
-        // Create vote record
-        $vote = Vote::create([
-            'election_id' => $request->election_id,
-            'candidate_id' => $request->candidate_id,
-            'voter_id' => Auth::id(),
-            'block_hash' => $blockHash,
-            'block_data' => $blockData,
+            'timestamp' => now(),
+            'nonce' => 0
         ]);
 
-        return back()->with('success', 'Your vote has been recorded successfully.');
+        // Get previous hash
+        $previousVote = Vote::latest()->first();
+        $vote->previous_hash = $previousVote ? $previousVote->hash : '0';
+
+        // Mine the block (generate hash with proof of work)
+        $vote->mine(4); // Using difficulty level 4 (adjust as needed)
+
+        // Save the vote
+        $vote->save();
+
+        // Get updated blockchain for response
+        $blockchain = Vote::getBlockchain();
+
+        return back()->with([
+            'success' => 'Your vote has been recorded successfully and added to the blockchain.',
+            'blockchainUpdate' => [
+                'newBlock' => $vote->block_info,
+                'blockchain' => $blockchain
+            ]
+        ]);
     }
 } 

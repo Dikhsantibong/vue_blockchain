@@ -13,13 +13,17 @@ class Vote extends Model
         'election_id',
         'candidate_id',
         'voter_id',
-        'block_hash',
-        'block_data'
+        'hash',
+        'previous_hash',
+        'timestamp',
+        'nonce'
     ];
 
     protected $casts = [
-        'block_data' => 'array'
+        'timestamp' => 'datetime'
     ];
+
+    protected $appends = ['block_info'];
 
     public function election()
     {
@@ -59,5 +63,56 @@ class Vote extends Model
 
         $this->hash = $this->calculateHash();
         return $this->hash;
+    }
+
+    public function getBlockInfoAttribute()
+    {
+        return [
+            'block_number' => $this->id,
+            'timestamp' => $this->timestamp->format('Y-m-d H:i:s'),
+            'hash' => $this->hash,
+            'previous_hash' => $this->previous_hash,
+            'nonce' => $this->nonce,
+            'data' => [
+                'election_id' => $this->election_id,
+                'candidate_id' => $this->candidate_id,
+                'voter_id' => $this->voter_id
+            ]
+        ];
+    }
+
+    public static function getBlockchain()
+    {
+        return static::with(['election', 'candidate', 'voter'])
+            ->orderBy('id', 'desc')
+            ->get()
+            ->map(function ($vote) {
+                return [
+                    'block_info' => $vote->block_info,
+                    'election_name' => $vote->election->title,
+                    'candidate_name' => $vote->candidate->name,
+                    'voter_name' => $vote->voter->name,
+                    'is_valid' => $vote->validateBlock()
+                ];
+            });
+    }
+
+    public function validateBlock()
+    {
+        // Verify hash
+        $calculatedHash = $this->calculateHash();
+        if ($this->hash !== $calculatedHash) {
+            return false;
+        }
+
+        // Verify previous hash
+        if ($this->id > 1) {
+            $previousVote = static::find($this->id - 1);
+            if ($previousVote && $this->previous_hash !== $previousVote->hash) {
+                return false;
+            }
+        }
+
+        return true;
     }
 } 
