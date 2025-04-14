@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Election extends Model
 {
@@ -30,5 +31,11 @@ class Election extends Model
     public function votes()
     {
         return $this->hasMany(Vote::class);
+    }
+
+    public function isActive()
+    {
+        $now = Carbon::now();
+        return $now->between($this->start_date, $this->end_date);
     }
 } 
