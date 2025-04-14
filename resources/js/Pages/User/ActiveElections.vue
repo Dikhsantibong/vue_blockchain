@@ -1,5 +1,4 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
 import UserSidebar from '@/Components/UserSidebar.vue';
 import { ref, computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
@@ -120,8 +119,8 @@ const truncateHash = (hash) => {
                                      :key="candidate.id"
                                      class="bg-indigo-900/40 rounded-lg overflow-hidden border border-indigo-700/30 transition-transform hover:scale-105">
                                     <!-- Candidate Image -->
-                                    <div class="aspect-w-16 aspect-h-9 bg-indigo-800/50">
-                                        <img :src="candidate.image" :alt="candidate.name" class="object-cover w-full h-full">
+                                    <div class="h-48 w-full bg-indigo-800/50">
+                                        <img :src="candidate.image_url" :alt="candidate.name" class="w-full h-full object-cover object-center">
                                     </div>
 
                                     <!-- Candidate Info -->
