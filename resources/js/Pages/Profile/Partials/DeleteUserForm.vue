@@ -39,31 +39,28 @@ const closeModal = () => {
 </script>
 
 <template>
-    
     <section class="space-y-6">
         <header>
-            <h2 class="text-lg font-medium text-gray-900">
+            <h2 class="text-lg font-medium text-white">
                 Delete Account
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600">
+            <p class="mt-1 text-sm text-indigo-300">
                 Once your account is deleted, all of its resources and data will
                 be permanently deleted. Before deleting your account, please
                 download any data or information that you wish to retain.
             </p>
         </header>
 
-        <DangerButton @click="confirmUserDeletion">Delete Account</DangerButton>
+        <DangerButton @click="confirmUserDeletion" class="bg-red-500/80 hover:bg-red-500">Delete Account</DangerButton>
 
         <Modal :show="confirmingUserDeletion" @close="closeModal">
-            <div class="p-6">
-                <h2
-                    class="text-lg font-medium text-gray-900"
-                >
+            <div class="p-6 bg-indigo-900/95">
+                <h2 class="text-lg font-medium text-white">
                     Are you sure you want to delete your account?
                 </h2>
 
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="mt-1 text-sm text-indigo-300">
                     Once your account is deleted, all of its resources and data
                     will be permanently deleted. Please enter your password to
                     confirm you would like to permanently delete your account.
@@ -73,7 +70,7 @@ const closeModal = () => {
                     <InputLabel
                         for="password"
                         value="Password"
-                        class="sr-only"
+                        class="sr-only text-indigo-200"
                     />
 
                     <TextInput
@@ -81,7 +78,7 @@ const closeModal = () => {
                         ref="passwordInput"
                         v-model="form.password"
                         type="password"
-                        class="mt-1 block w-3/4"
+                        class="mt-1 block w-3/4 bg-indigo-900/50 border-indigo-500/30 text-white placeholder-indigo-300"
                         placeholder="Password"
                         @keyup.enter="deleteUser"
                     />
@@ -90,12 +87,12 @@ const closeModal = () => {
                 </div>
 
                 <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal">
+                    <SecondaryButton @click="closeModal" class="bg-indigo-800/50 text-indigo-200 hover:bg-indigo-800">
                         Cancel
                     </SecondaryButton>
 
                     <DangerButton
-                        class="ms-3"
+                        class="ms-3 bg-red-500/80 hover:bg-red-500"
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
                         @click="deleteUser"
