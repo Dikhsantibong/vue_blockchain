@@ -66,6 +66,8 @@ class VoteController extends Controller
         }
     }
 
+    
+
     public function verify($electionId)
     {
         $votes = Vote::where('election_id', $electionId)

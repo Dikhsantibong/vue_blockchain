@@ -106,9 +106,9 @@ const tabs = {
                 <div class="mb-8 bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-indigo-700/30">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div>
-                            <h1 class="text-3xl font-bold text-white mb-2">Welcome back, {{ auth.user.name }}!</h1>
-                            <p class="text-indigo-200">Here's what's happening with your voting activities.</p>
-                        </div>
+                    <h1 class="text-3xl font-bold text-white mb-2">Welcome back, {{ auth.user.name }}!</h1>
+                    <p class="text-indigo-200">Here's what's happening with your voting activities.</p>
+                </div>
                         <div class="mt-4 md:mt-0">
                             <span class="inline-flex items-center px-4 py-2 bg-emerald-500/20 text-emerald-300 rounded-lg">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,7 +118,7 @@ const tabs = {
                             </span>
                         </div>
                     </div>
-                </div>
+                    </div>
 
                 <!-- Stats Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -179,7 +179,7 @@ const tabs = {
                             <!-- Election Header -->
                             <div class="bg-indigo-900/30 px-8 py-6 border-b border-indigo-700/30">
                                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                    <div>
+                                <div>
                                         <h3 class="text-2xl font-semibold text-white mb-2">{{ election.title }}</h3>
                                         <p class="text-indigo-200 max-w-2xl">{{ election.description }}</p>
                                     </div>
@@ -261,7 +261,7 @@ const tabs = {
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                 </svg>
                                                 <span>{{ hasVoted(election.id) ? 'Already Voted' : 'Vote for Candidate' }}</span>
-                                            </button>
+                                </button>
                                         </div>
                                     </div>
                                 </div>

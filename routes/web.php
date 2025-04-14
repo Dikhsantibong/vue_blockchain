@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\ActiveElectionController;
 use App\Http\Controllers\User\MyVotesController;
+use App\Http\Controllers\Admin\ElectionController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\VoteController as AdminVoteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +77,9 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/elections/{election}/candidates', [App\Http\Controllers\Admin\CandidateController::class, 'index'])->name('admin.elections.candidates.index');
     Route::post('/elections/{election}/candidates', [App\Http\Controllers\Admin\CandidateController::class, 'store'])->name('admin.elections.candidates.store');
     Route::delete('/elections/{election}/candidates/{candidate}', [App\Http\Controllers\Admin\CandidateController::class, 'destroy'])->name('admin.elections.candidates.destroy');
+
+    // Votes management route
+    Route::get('/votes', [AdminVoteController::class, 'index'])->name('admin.votes');
 });
 
 Route::middleware('auth')->group(function () {
