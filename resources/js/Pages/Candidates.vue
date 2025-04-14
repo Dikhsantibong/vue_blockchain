@@ -89,11 +89,11 @@ const handleImageUpload = (event) => {
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div v-for="candidate in candidates" :key="candidate.id" 
                          class="group bg-white/5 hover:bg-white/10 backdrop-blur-sm rounded-2xl border border-indigo-700/30 overflow-hidden transition-all duration-200">
-                        <div class="aspect-w-16 aspect-h-12 bg-indigo-900/40">
+                        <div class="relative h-48 w-full overflow-hidden bg-indigo-900/40">
                             <img 
                                 :src="candidate.image_url" 
                                 :alt="candidate.name"
-                                class="object-cover w-full h-full"
+                                class="absolute w-full h-full object-cover object-center"
                             >
                         </div>
                         <div class="p-6">
