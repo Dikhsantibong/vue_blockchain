@@ -97,21 +97,72 @@ const confirmDelete = () => {
             <main class="p-8">
                 <!-- Header -->
                 <div class="mb-8">
-                    <h1 class="text-3xl font-bold text-white mb-2">Manage Users</h1>
-                    <p class="text-indigo-200">View and manage system users.</p>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <div class="p-2 bg-indigo-600/20 rounded-lg">
+                            <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-bold text-white">Manage Users</h1>
+                            <p class="text-indigo-200 mt-1">View and manage system users with enhanced control.</p>
+                        </div>
+                    </div>
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-3 gap-6 mt-6">
+                        <div class="bg-gradient-to-br from-blue-600/20 to-indigo-600/20 p-4 rounded-lg border border-indigo-700/30">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-indigo-200 text-sm">Total Users</p>
+                                    <p class="text-2xl font-bold text-white mt-1">{{ users.length }}</p>
+                                </div>
+                                <div class="p-3 bg-blue-500/20 rounded-lg">
+                                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-600/20 to-indigo-600/20 p-4 rounded-lg border border-indigo-700/30">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-indigo-200 text-sm">Admin Users</p>
+                                    <p class="text-2xl font-bold text-white mt-1">{{ users.filter(u => u.role === 'admin').length }}</p>
+                                </div>
+                                <div class="p-3 bg-purple-500/20 rounded-lg">
+                                    <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-600/20 to-indigo-600/20 p-4 rounded-lg border border-indigo-700/30">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-indigo-200 text-sm">Regular Users</p>
+                                    <p class="text-2xl font-bold text-white mt-1">{{ users.filter(u => u.role === 'user').length }}</p>
+                                </div>
+                                <div class="p-3 bg-green-500/20 rounded-lg">
+                                    <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Search and Actions -->
-                <div class="mb-6 flex justify-between items-center">
-                    <div class="relative w-64">
+                <div class="mb-6 bg-white/5 p-4 rounded-lg border border-indigo-700/30 flex justify-between items-center">
+                    <div class="relative w-96">
                         <input
                             type="text"
                             v-model="searchQuery"
-                            placeholder="Search users..."
-                            class="w-full px-4 py-2 bg-white/10 border border-indigo-700/30 rounded-lg text-white placeholder-indigo-300 focus:outline-none focus:border-indigo-500"
+                            placeholder="Search by name, email, or NIK..."
+                            class="w-full px-4 py-2 bg-white/10 border border-indigo-700/30 rounded-lg text-white placeholder-indigo-300 focus:outline-none focus:border-indigo-500 pl-10"
                         >
                         <svg
-                            class="absolute right-3 top-2.5 h-5 w-5 text-indigo-300"
+                            class="absolute left-3 top-2.5 h-5 w-5 text-indigo-300"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -126,7 +177,7 @@ const confirmDelete = () => {
                     </div>
                     <button 
                         @click="showModal = true"
-                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center space-x-2"
+                        class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white rounded-lg transition-all duration-200 flex items-center space-x-2 shadow-lg shadow-indigo-600/20"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -136,50 +187,61 @@ const confirmDelete = () => {
                 </div>
 
                 <!-- Users Table -->
-                <div class="bg-white/5 backdrop-blur-sm rounded-xl border border-indigo-700/30 overflow-hidden">
+                <div class="bg-white/5 backdrop-blur-sm rounded-xl border border-indigo-700/30 overflow-hidden shadow-xl shadow-indigo-900/20">
                     <table class="min-w-full divide-y divide-indigo-700/30">
                         <thead>
-                            <tr class="bg-indigo-900/40">
-                                <th class="px-6 py-3 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border border-indigo-700/30">No</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border border-indigo-700/30">Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border border-indigo-700/30">Email</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border border-indigo-700/30">NIK</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border border-indigo-700/30">Phone</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border border-indigo-700/30">Role</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border border-indigo-700/30">Actions</th>
+                            <tr class="bg-gradient-to-r from-indigo-900/40 to-blue-900/40">
+                                <th class="px-6 py-4 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border-b border-indigo-700/30">No</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border-b border-indigo-700/30">Name</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border-b border-indigo-700/30">Email</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border-b border-indigo-700/30">NIK</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border-b border-indigo-700/30">Phone</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border-b border-indigo-700/30">Role</th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-indigo-200 uppercase tracking-wider border-b border-indigo-700/30">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-indigo-700/30">
-                            <tr v-for="user in users" :key="user.id" class="hover:bg-indigo-900/40 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm border border-indigo-700/30 text-white">{{ user.id }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm border border-indigo-700/30 text-white">{{ user.name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm border border-indigo-700/30 text-white">{{ user.email }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm border border-indigo-700/30 text-white">{{ user.nik }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm border border-indigo-700/30 text-white">{{ user.phone }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm border border-indigo-700/30">
+                            <tr v-for="(user, index) in users" :key="user.id" class="hover:bg-indigo-900/40 transition-all duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ index + 1 }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white font-medium text-sm">
+                                            {{ user.name.charAt(0).toUpperCase() }}
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm font-medium text-white">{{ user.name }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-indigo-200">{{ user.email }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-indigo-200">{{ user.nik }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-indigo-200">{{ user.phone }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <span :class="{
-                                        'px-2 py-1 text-xs font-medium rounded-full': true,
-                                        'bg-blue-500/20 text-blue-300': user.role === 'user',
-                                        'bg-indigo-500/20 text-indigo-300': user.role === 'admin'
+                                        'px-3 py-1 text-xs font-medium rounded-full shadow-sm': true,
+                                        'bg-blue-500/20 text-blue-300 border border-blue-500/30': user.role === 'user',
+                                        'bg-purple-500/20 text-purple-300 border border-purple-500/30': user.role === 'admin'
                                     }">
                                         {{ user.role }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-white border border-indigo-700/30">
-                                    <div class="flex space-x-2">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
+                                    <div class="flex space-x-3">
                                         <button 
                                             @click="openEditModal(user)"
-                                            class="p-1 hover:text-blue-400 transition-colors"
+                                            class="p-1.5 bg-blue-500/10 rounded-lg hover:bg-blue-500/20 transition-colors"
+                                            title="Edit User"
                                         >
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
                                         <button 
                                             @click="openDeleteModal(user)"
-                                            class="p-1 hover:text-red-400 transition-colors"
+                                            class="p-1.5 bg-red-500/10 rounded-lg hover:bg-red-500/20 transition-colors"
+                                            title="Delete User"
                                         >
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
                                         </button>
